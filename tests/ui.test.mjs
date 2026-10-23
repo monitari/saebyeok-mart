@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { filteredLog } from '../dist/ui.js';
+import { filteredLog } from '../web/js/ui/ui.js';
 
 test('a departed customer group filter keeps its visit and cashier replies, excluding unrelated people',()=>{
   const s={actors:{worker:{id:'worker'}},visits:[],log:[

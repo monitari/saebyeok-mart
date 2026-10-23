@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, step, startConversation, speak, SIM_DT } from '../dist/sim.js';
-import { momentView, MOMENT_CAP, FRAME_CAP, tickMoments } from '../dist/moments.js';
-import { exportText, parseSave, MAX_IMPORT_BYTES } from '../dist/save.js';
+import { initialState, step, startConversation, speak, SIM_DT } from '../web/js/sim/sim.js';
+import { momentView, MOMENT_CAP, FRAME_CAP, tickMoments } from '../web/js/mind/moments.js';
+import { exportText, parseSave, MAX_IMPORT_BYTES } from '../web/js/storage/save.js';
 
 const advance=(s,minutes)=>{for(let i=0;i<minutes/SIM_DT;i++)step(s,SIM_DT);};
 

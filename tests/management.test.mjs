@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,step,stockAudit,placeOrder,approveDraft,requestRestock,decideRequest,restockOption,canWorkerOrder,startVisit,startConversation} from '../dist/sim.js';
-import {createDraft,setOrderMode,productStatus,recommendations,orderAllowance,nextDelivery,activeSchedule,neighborhoodBias,closeManagementDay,newDay} from '../dist/management.js';
-import {exportText,parseSave} from '../dist/save.js';
-import {PRODUCTS} from '../dist/data.js';
-import {center,FIXTURES} from '../dist/world.js';
+import {initialState,step,stockAudit,placeOrder,approveDraft,requestRestock,decideRequest,restockOption,canWorkerOrder,startVisit,startConversation} from '../web/js/sim/sim.js';
+import {createDraft,setOrderMode,productStatus,recommendations,orderAllowance,nextDelivery,activeSchedule,neighborhoodBias,closeManagementDay,newDay} from '../web/js/sim/management.js';
+import {exportText,parseSave} from '../web/js/storage/save.js';
+import {PRODUCTS} from '../web/js/sim/data.js';
+import {center,FIXTURES} from '../web/js/sim/world.js';
 const run=(s,n)=>{for(let i=0;i<n;i++)step(s,.1);};
 const atThree=s=>{s.clock=1620-.05;s.day=2;s.sales.day=2;s.management.today.day=2;s.orders.lastAutoDay=1;s.orders.lastDeliveryDay=1;s.director.nextAt=1e9;s.director.story=[];};
 const audit=s=>{for(const [p,a]of Object.entries(stockAudit(s)))assert.equal(a.actual,a.expected,p);};

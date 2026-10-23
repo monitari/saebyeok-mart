@@ -1,16 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, step, stockAudit, START_MONEY, findPath, floorCell, cleanLine, resolvePending, restockOption, placeOrder, WORKERS } from '../dist/sim.js';
-import { exportText, parseSave, splitParts, joinParts, snapshot } from '../dist/save.js';
-import { lintLine } from '../dist/lint.js';
-import { allTemplateSamples } from '../dist/dialogue.js';
-import { witnessesAt } from '../dist/memory.js';
-import { cellOf, center, FIXTURES } from '../dist/world.js';
-import { workerAt } from '../dist/roster.js';
-import { makeGenes, buildAppearance, validateAppearance, generatePerson, uniqueLabels } from '../dist/genes.js';
-import { CAST } from '../dist/data.js';
-import { DialogueService, parseResult } from '../dist/ai.js';
-import * as legacy from '../archive/prototype-v0.1/dist/sim.js';
+import { initialState, step, stockAudit, START_MONEY, findPath, floorCell, cleanLine, resolvePending, restockOption, placeOrder, WORKERS } from '../web/js/sim/sim.js';
+import { exportText, parseSave, splitParts, joinParts, snapshot } from '../web/js/storage/save.js';
+import { lintLine } from '../web/js/dialogue/lint.js';
+import { allTemplateSamples } from '../web/js/dialogue/dialogue.js';
+import { witnessesAt } from '../web/js/mind/memory.js';
+import { cellOf, center, FIXTURES } from '../web/js/sim/world.js';
+import { workerAt } from '../web/js/sim/roster.js';
+import { makeGenes, buildAppearance, validateAppearance, generatePerson, uniqueLabels } from '../web/js/mind/genes.js';
+import { CAST } from '../web/js/sim/data.js';
+import { DialogueService, parseResult } from '../web/js/dialogue/ai.js';
+// The v0.1 prototype's simulation, kept verbatim so migration is tested against a real old save.
+import * as legacy from './fixtures/prototype-v0.1-sim.js';
 
 const advance = (s, minutes, each) => { for (let i = 0; i < minutes * 10; i++) { step(s, .1); each?.(s); } };
 const until = (s, pred, maxMinutes, each) => { for (let i = 0; i < maxMinutes * 10; i++) { step(s, .1); each?.(s); if (pred(s)) return true; } return false; };
@@ -283,8 +284,8 @@ test('genes are reproducible, parts stay compatible, looks do not decide tempera
 });
 
 // ---------- context-aware rule dialogue ----------
-import { phrase, CONTEXT } from '../dist/dialogue.js';
-import { factsFor, stageOf } from '../dist/sim.js';
+import { phrase, CONTEXT } from '../web/js/dialogue/dialogue.js';
+import { factsFor, stageOf } from '../web/js/sim/sim.js';
 
 test('the most specific line that fits the moment wins, and blocked or incomplete lines are skipped', () => {
   const r = () => 0;

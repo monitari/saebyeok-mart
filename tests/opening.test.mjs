@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState,step,stockAudit } from '../dist/sim.js';
-import { OPENING_TIME,startOpening,restartGuide,noteOpening,guideView } from '../dist/opening.js';
-import { workerAt } from '../dist/roster.js';
-import { exportText,parseSave } from '../dist/save.js';
-import { knowsName,remember } from '../dist/memory.js';
+import { initialState,step,stockAudit } from '../web/js/sim/sim.js';
+import { OPENING_TIME,startOpening,restartGuide,noteOpening,guideView } from '../web/js/sim/opening.js';
+import { workerAt } from '../web/js/sim/roster.js';
+import { exportText,parseSave } from '../web/js/storage/save.js';
+import { knowsName,remember } from '../web/js/mind/memory.js';
 const advance=(s,m)=>{for(let i=0;i<m*10;i++)step(s,.1);};
 
 test('a fresh opening is coherent with the roster, initial stock, known companions and the store ledger',()=>{

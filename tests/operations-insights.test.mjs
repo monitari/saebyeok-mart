@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,step,startVisit,stockAudit,setFacility,setPar,placeOrder,settleOffline} from '../dist/sim.js';
-import {newDay,closeManagementDay,setOrderMode,createDraft} from '../dist/management.js';
-import {operationAlerts,decisionFeedback,returnSummary} from '../dist/operations-insights.js';
-import {chooseVisitPurpose} from '../dist/visit-purpose.js';
-import {addEvent} from '../dist/memory.js';
-import {exportText,parseSave} from '../dist/save.js';
+import {initialState,step,startVisit,stockAudit,setFacility,setPar,placeOrder,settleOffline} from '../web/js/sim/sim.js';
+import {newDay,closeManagementDay,setOrderMode,createDraft} from '../web/js/sim/management.js';
+import {operationAlerts,decisionFeedback,returnSummary} from '../web/js/sim/operations-insights.js';
+import {chooseVisitPurpose} from '../web/js/sim/visit-purpose.js';
+import {addEvent} from '../web/js/mind/memory.js';
+import {exportText,parseSave} from '../web/js/storage/save.js';
 
 const run=(s,minutes)=>{for(let i=0;i<minutes*10;i++)step(s,.1);};
 function quiet(){

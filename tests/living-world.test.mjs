@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, step, stageOf, startConversation } from '../dist/sim.js';
-import { tickStreet, streetInterval, STREET_CAP, validateStreet } from '../dist/street.js';
-import { remember, consolidateMemories, dailyDecay, rel, adjust, noteContact, addEvent, openObligation, resolveObligation, learnResolved, relevantMemories } from '../dist/memory.js';
-import { perceive } from '../dist/perceive.js';
-import { momentView } from '../dist/moments.js';
-import { exportText, parseSave } from '../dist/save.js';
-import { hitTest } from '../dist/art.js';
+import { initialState, step, stageOf, startConversation } from '../web/js/sim/sim.js';
+import { tickStreet, streetInterval, STREET_CAP, validateStreet } from '../web/js/sim/street.js';
+import { remember, consolidateMemories, dailyDecay, rel, adjust, noteContact, addEvent, openObligation, resolveObligation, learnResolved, relevantMemories } from '../web/js/mind/memory.js';
+import { perceive } from '../web/js/mind/perceive.js';
+import { momentView } from '../web/js/mind/moments.js';
+import { exportText, parseSave } from '../web/js/storage/save.js';
+import { hitTest } from '../web/js/render/art.js';
 const advance=(s,m)=>{for(let i=0;i<m*10;i++)step(s,.1);};
 
 test('outside traffic is deterministic, bounded, varied and independent of customers and store randomness',()=>{

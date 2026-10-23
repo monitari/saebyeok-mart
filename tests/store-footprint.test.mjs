@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {STORE_ROOMS,storeCell,storeBoundary,FIXTURES,QUARTER_V4_FIXTURES,fixturesFor,SPOTS,LAYOUT_VERSION,center,cellOf,floorCell,findPath} from '../dist/world.js';
-import {initialState,step,stockAudit} from '../dist/sim.js';
-import {parseSave,exportText} from '../dist/save.js';
-import {sceneNodes} from '../dist/art-quarter.js';
+import {STORE_ROOMS,storeCell,storeBoundary,FIXTURES,QUARTER_V4_FIXTURES,fixturesFor,SPOTS,LAYOUT_VERSION,center,cellOf,floorCell,findPath} from '../web/js/sim/world.js';
+import {initialState,step,stockAudit} from '../web/js/sim/sim.js';
+import {parseSave,exportText} from '../web/js/storage/save.js';
+import {sceneNodes} from '../web/js/render/art-quarter.js';
 
 test('the joined rooms have recessed exterior corners and continuous openings between rooms',()=>{
   assert.equal(STORE_ROOMS.length,4);

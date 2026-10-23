@@ -1,5 +1,5 @@
 import { mkdir,writeFile } from 'node:fs/promises';
-import { ADAPTERS,buildMessages,parseResult,probeModel } from '../dist/ai.js';
+import { ADAPTERS,buildMessages,parseResult,probeModel } from '../web/js/dialogue/ai.js';
 const cfg={mode:'ollama',url:process.env.MODEL_URL??'http://127.0.0.1:11434',model:process.env.MODEL_NAME??'qwen2.5:3b'};
 if(!['127.0.0.1','localhost','[::1]'].includes(new URL(cfg.url).hostname))throw new Error('Local model only');
 const probe=await probeModel(cfg);

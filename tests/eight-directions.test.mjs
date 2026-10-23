@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {DIRECTIONS,DIRECTION_VECTORS,directionFromVector} from '../dist/directions.js';
-import {screenDirection} from '../dist/projection.js';
-import {FIXTURES,QUARTER_V2_FIXTURES,LAYOUT_VERSION,fixturesFor,center,cellOf,floorCell,findPath,SPOTS} from '../dist/world.js';
-import {initialState,step,stockAudit,startConversation} from '../dist/sim.js';
-import {parseSave,exportText} from '../dist/save.js';
-import {momentView} from '../dist/moments.js';
-import {drawPerson} from '../dist/art.js';
+import {DIRECTIONS,DIRECTION_VECTORS,directionFromVector} from '../web/js/sim/directions.js';
+import {screenDirection} from '../web/js/render/projection.js';
+import {FIXTURES,QUARTER_V2_FIXTURES,LAYOUT_VERSION,fixturesFor,center,cellOf,floorCell,findPath,SPOTS} from '../web/js/sim/world.js';
+import {initialState,step,stockAudit,startConversation} from '../web/js/sim/sim.js';
+import {parseSave,exportText} from '../web/js/storage/save.js';
+import {momentView} from '../web/js/mind/moments.js';
+import {drawPerson} from '../web/js/render/art.js';
 import {PixelCanvas} from '../scripts/pixel-canvas.mjs';
 
 test('all eight floor headings project to distinct, correct screen headings',()=>{

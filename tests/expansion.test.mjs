@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState,step,startVisit,stockAudit,settleOffline,setFacility,eligibleForTobacco,advanceDialogueTime,resolvePending } from '../dist/sim.js';
-import { exportText,parseSave } from '../dist/save.js';
-import { WriterLease } from '../dist/lease.js';
-import { pinMoment,MOMENT_CAP } from '../dist/moments.js';
-import { parseResult,probeModel,DialogueService } from '../dist/ai.js';
-import { weeklyLife,effectiveLife } from '../dist/life.js';
+import { initialState,step,startVisit,stockAudit,settleOffline,setFacility,eligibleForTobacco,advanceDialogueTime,resolvePending } from '../web/js/sim/sim.js';
+import { exportText,parseSave } from '../web/js/storage/save.js';
+import { WriterLease } from '../web/js/storage/lease.js';
+import { pinMoment,MOMENT_CAP } from '../web/js/mind/moments.js';
+import { parseResult,probeModel,DialogueService } from '../web/js/dialogue/ai.js';
+import { weeklyLife,effectiveLife } from '../web/js/sim/life.js';
 const advance=(s,m)=>{for(let i=0;i<m*10;i++)step(s,.1);};
 const balance=s=>300000+(s.stats.totals?.sale??0)-(s.stats.totals?.order??0)-(s.stats.totals?.expense??0);
 

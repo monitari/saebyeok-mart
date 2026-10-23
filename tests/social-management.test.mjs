@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState,step,startVisit,spawnWorker,stockAudit,setFacility,START_MONEY} from '../dist/sim.js';
-import {rankSeats,socialPull,groupWaitLimit} from '../dist/social-space.js';
-import {workerStyle} from '../dist/worker-style.js';
-import {stockRows,applyStockBatch,recommendationReasons} from '../dist/stock-tools.js';
-import {setFavorite,productStatus,newDay} from '../dist/management.js';
-import {FIXTURES,center} from '../dist/world.js';
-import {exportText,parseSave,MAX_IMPORT_BYTES} from '../dist/save.js';
+import {initialState,step,startVisit,spawnWorker,stockAudit,setFacility,START_MONEY} from '../web/js/sim/sim.js';
+import {rankSeats,socialPull,groupWaitLimit} from '../web/js/sim/social-space.js';
+import {workerStyle} from '../web/js/sim/worker-style.js';
+import {stockRows,applyStockBatch,recommendationReasons} from '../web/js/sim/stock-tools.js';
+import {setFavorite,productStatus,newDay} from '../web/js/sim/management.js';
+import {FIXTURES,center} from '../web/js/sim/world.js';
+import {exportText,parseSave,MAX_IMPORT_BYTES} from '../web/js/storage/save.js';
 const run=(s,minutes)=>{for(let i=0;i<minutes*10;i++)step(s,.1);};
 const audit=s=>{for(const [p,a]of Object.entries(stockAudit(s)))assert.equal(a.actual,a.expected,p);};
 function quiet(worker='yuna'){

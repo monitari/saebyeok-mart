@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { initialState, step, startVisit, stockAudit, START_MONEY, WORKERS } from '../dist/sim.js';
-import { remember } from '../dist/memory.js';
-import { lintLine } from '../dist/lint.js';
-import { DAILY_CAP, TROUBLE, wariness } from '../dist/nuisance.js';
-import { parseSave, snapshot } from '../dist/save.js';
-import { CAST } from '../dist/data.js';
+import { initialState, step, startVisit, stockAudit, START_MONEY, WORKERS } from '../web/js/sim/sim.js';
+import { remember } from '../web/js/mind/memory.js';
+import { lintLine } from '../web/js/dialogue/lint.js';
+import { DAILY_CAP, TROUBLE, wariness } from '../web/js/sim/nuisance.js';
+import { parseSave, snapshot } from '../web/js/storage/save.js';
+import { CAST } from '../web/js/sim/data.js';
 
 const advance = (s, minutes, each) => { for (let i = 0; i < minutes * 10; i++) { step(s, .1); each?.(s); } };
 const until = (s, pred, minutes) => { for (let i = 0; i < minutes * 10; i++) { step(s, .1); if (pred(s)) return true; } return false; };
@@ -28,7 +28,7 @@ function visit(s, id, plan, set = {}) {
 }
 
 test('every fixed line said by difficult customers and workers passes the dialogue rules', () => {
-  const src = readFileSync(new URL('../dist/nuisance.js', import.meta.url), 'utf8') + readFileSync(new URL('../dist/sim.js', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../web/js/sim/nuisance.js', import.meta.url), 'utf8') + readFileSync(new URL('../web/js/sim/sim.js', import.meta.url), 'utf8');
   const said = new Set();
   // Every Korean string on a line that sets a fixed line of dialogue.
   for (const line of src.split('\n')) if (line.includes('literal:')) for (const q of line.matchAll(/'([^'{}()`]*[가-힣][^'{}()`]*)'/g)) said.add(q[1]);

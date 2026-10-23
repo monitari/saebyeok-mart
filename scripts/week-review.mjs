@@ -1,7 +1,7 @@
 import {mkdir,writeFile} from 'node:fs/promises';
-import {initialState,step,stockAudit,setFacility} from '../dist/sim.js';
-import {exportText,parseSave} from '../dist/save.js';
-import {startOpening} from '../dist/opening.js';
+import {initialState,step,stockAudit,setFacility} from '../web/js/sim/sim.js';
+import {exportText,parseSave} from '../web/js/storage/save.js';
+import {startOpening} from '../web/js/sim/opening.js';
 const reports=[];
 for(const seed of [42,4242,20261022]){
   const s=initialState(seed);startOpening(s,true);setFacility(s,'tobaccoSales',true);let maxPending=0;

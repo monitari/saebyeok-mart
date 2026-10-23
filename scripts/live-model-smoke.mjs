@@ -1,6 +1,6 @@
 import {mkdir,writeFile} from 'node:fs/promises';
-import {initialState,step,advanceDialogueTime,pendingToDispatch,resolvePending,stockAudit} from '../dist/sim.js';
-import {DialogueService} from '../dist/ai.js';
+import {initialState,step,advanceDialogueTime,pendingToDispatch,resolvePending,stockAudit} from '../web/js/sim/sim.js';
+import {DialogueService} from '../web/js/dialogue/ai.js';
 const s=initialState(),svc=new DialogueService();s.aiMode='ollama';svc.configure({mode:'ollama',url:'http://127.0.0.1:11434',model:'qwen2.5:3b'});
 let applied=0,fallback=0;const end=Date.now()+10000;
 await new Promise(done=>{const timer=setInterval(()=>{

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState,step,stockAudit,startVisit } from '../dist/sim.js';
-import { FIXTURES,LEGACY_FIXTURES,LAYOUT_VERSION,floorCell,center } from '../dist/world.js';
-import { project,unproject,floorQuad,boxFaces,inPolygon,SCENE_WIDTH,SCENE_HEIGHT } from '../dist/projection.js';
-import { sceneNodes,hitTestScene } from '../dist/art-quarter.js';
-import { parseSave,exportText } from '../dist/save.js';
-import { startConversation } from '../dist/sim.js';
-import { momentView } from '../dist/moments.js';
+import { initialState,step,stockAudit,startVisit } from '../web/js/sim/sim.js';
+import { FIXTURES,LEGACY_FIXTURES,LAYOUT_VERSION,floorCell,center } from '../web/js/sim/world.js';
+import { project,unproject,floorQuad,boxFaces,inPolygon,SCENE_WIDTH,SCENE_HEIGHT } from '../web/js/render/projection.js';
+import { sceneNodes,hitTestScene } from '../web/js/render/art-quarter.js';
+import { parseSave,exportText } from '../web/js/storage/save.js';
+import { startConversation } from '../web/js/sim/sim.js';
+import { momentView } from '../web/js/mind/moments.js';
 import { PixelCanvas,png } from '../scripts/pixel-canvas.mjs';
 
 test('quarter-view projection round-trips logical points and leaves room for walls and upright sprites',()=>{
@@ -96,7 +96,7 @@ test('a full old dining area migrates to fewer window seats without overlapping 
 
 test('the real scene renderer is read-only, draws a full raster and updates visible stock through its cache',async()=>{
   globalThis.OffscreenCanvas=PixelCanvas;
-  const {renderScene}=await import('../dist/art.js');
+  const {renderScene}=await import('../web/js/render/art.js');
   const s=initialState(),before=JSON.stringify(s),first=new PixelCanvas(SCENE_WIDTH,SCENE_HEIGHT);
   renderScene(first.getContext('2d'),s,{now:0,selected:'yuna'});assert.equal(JSON.stringify(s),before);
   const data=png(first);assert.deepEqual([...data.subarray(0,8)],[137,80,78,71,13,10,26,10]);
@@ -109,8 +109,8 @@ test('the real scene renderer is read-only, draws a full raster and updates visi
 
 test('the scene is drawn only in whole pixels: no anti-aliased paths, strokes, scaled text or fractional rectangles',async()=>{
   globalThis.OffscreenCanvas=PixelCanvas;
-  const {renderScene}=await import('../dist/art.js');
-  const {initialState:fresh,step:advance,setFacility}=await import('../dist/sim.js');
+  const {renderScene}=await import('../web/js/render/art.js');
+  const {initialState:fresh,step:advance,setFacility}=await import('../web/js/sim/sim.js');
   const proto=Object.getPrototypeOf(new PixelCanvas(1,1).getContext('2d')),saved={},bad=[];
   for(const name of ['fill','stroke','fillText','arc','ellipse','transform','rotate'])saved[name]=proto[name];
   for(const name of ['fill','stroke','fillText','arc','ellipse','rotate'])proto[name]=function(...a){bad.push(name);return saved[name].apply(this,a);};

@@ -1,8 +1,8 @@
 import {writeFileSync} from 'node:fs';
 import {PixelCanvas,png} from './pixel-canvas.mjs';
-import {initialState} from '../dist/sim.js';
-import {drawPerson} from '../dist/art.js';
-import {pixelText} from '../dist/pixel.js';
+import {initialState} from '../web/js/sim/sim.js';
+import {drawPerson} from '../web/js/render/art.js';
+import {pixelText} from '../web/js/render/pixel.js';
 // Screen headings, clockwise. Preview is enlarged by integer nearest-neighbour pixels.
 const dirs=['up','up-right','right','down-right','down','down-left','left','up-left'];
 const s=initialState(),cv=new PixelCanvas(576,360),c=cv.getContext('2d');

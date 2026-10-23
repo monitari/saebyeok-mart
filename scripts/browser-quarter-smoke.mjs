@@ -6,7 +6,7 @@ import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import assert from 'node:assert/strict';
-const root=path.resolve('dist'),delay=ms=>new Promise(r=>setTimeout(r,ms));
+const root=path.resolve('web'),delay=ms=>new Promise(r=>setTimeout(r,ms));
 const server=createServer(async(req,res)=>{
   try{
     const pathname=new URL(req.url,'http://localhost').pathname;
@@ -44,8 +44,8 @@ try{
   await evaluate("document.getElementById('welcome-skip').click()");await delay(1800);
   assert.equal(await evaluate("document.getElementById('welcome').open"),false);
   const result=await evaluate(`(async()=>{
-    const {initialState,step}=await import('/sim.js'),{renderScene,hitTestScene}=await import('/art.js');
-    const {FIXTURES,center}=await import('/world.js'),{project,SCENE_WIDTH,SCENE_HEIGHT}=await import('/projection.js');
+    const {initialState,step}=await import('/js/sim/sim.js'),{renderScene,hitTestScene}=await import('/js/render/art.js');
+    const {FIXTURES,center}=await import('/js/sim/world.js'),{project,SCENE_WIDTH,SCENE_HEIGHT}=await import('/js/render/projection.js');
     const s=initialState();for(let i=0;i<400;i++)step(s,.1);
     const cv=document.createElement('canvas');cv.width=SCENE_WIDTH;cv.height=SCENE_HEIGHT;
     renderScene(cv.getContext('2d'),s,{now:1234,selected:'yuna'});
@@ -69,14 +69,14 @@ try{
     click('[data-ops-tab="stock"]');click('[data-draft="create"]');
     const first=Object.keys(__game.state.management.draft.items)[0];check(!!first,'draft contents');
     change('[data-draft-qty="'+first+'"]','1');check(__game.state.management.draft.items[first]===1,'quantity');
-    const cost=(await import('/management.js')).draftCost(__game.state),before=__game.state.money;
+    const cost=(await import('/js/sim/management.js')).draftCost(__game.state),before=__game.state.money;
     click('[data-draft="approve"]');check(__game.state.money===before-cost,'atomic approval');check(__game.state.management.draft===null,'draft cleared');
     change('#order-mode','manual');change('[data-order-qty="coffee"]','3');const coffee=__game.state.orders.pending.coffee??0;click('[data-order="coffee"]');check(__game.state.orders.pending.coffee===coffee+3,'manual quantity');
     click('[data-ops-tab="facilities"]');click('[data-install="welcomeMat"]');check(__game.state.facilities.welcomeMat,'facility');
     click('[data-ops-tab="work"]');change('[data-policy="priority"]','stock');check(__game.state.management.priority==='stock','priority');
     click('[data-open-person="'+__game.state.onDuty+'"]');check(!document.getElementById('panel-person').hidden,'person panel');click('.back-to-ops');check(!document.getElementById('panel-ops').hidden,'return');
     click('[data-ops-tab="stock"]');click('#ops-expand');check(document.getElementById('operations-wide').open,'wide view');
-    const {parseSave,exportText}=await import('/save.js');check(parseSave(exportText(__game.state)).management.mode==='manual','save');
+    const {parseSave,exportText}=await import('/js/storage/save.js');check(parseSave(exportText(__game.state)).management.mode==='manual','save');
     return {approval:true,manual:true,facility:true,priority:true,personReturn:true,save:true};
   })()`);
   const opsShot=await call('Page.captureScreenshot',{format:'png'});await writeFile('reports/operations-wide.png',Buffer.from(opsShot.data,'base64'));
@@ -92,7 +92,7 @@ try{
     check(document.querySelector('[data-order=pudding]'),'new menu can be ordered');click('[data-stock-clear]');
     click('#store-pulse [data-locate-fixture=restroom]');check(__game.ui.fixture==='restroom','restroom location');
     click('[data-zoom=fit]');click('[data-stock-clear]');
-    const {step}=await import('/sim.js');for(let i=0;i<400;i++)step(__game.state,.1);
+    const {step}=await import('/js/sim/sim.js');for(let i=0;i<400;i++)step(__game.state,.1);
     click('#store-pulse [data-ops-tab=overview]');
     check(document.querySelector('.receipt-row'),'real payment receipt visible');
     check(document.querySelector('.floor-people button small').textContent.length>0,'real actor status');
@@ -113,9 +113,9 @@ try{
     document.querySelector('[data-stock-reason="coffee"] summary').click();
     click('[data-stock-select="clear"]');check(document.querySelector('[data-stock-reason="coffee"]').open,'reason disclosure preserved');
     const qty=document.querySelector('[data-order-qty="coffee"]');qty.value='5';qty.dispatchEvent(new Event('input',{bubbles:true}));
-    const cost=(await import('/data.js')).PRODUCTS.coffee.cost*5;check(document.querySelector('[data-order-cost="coffee"]').textContent.includes(cost.toLocaleString('ko-KR')),'live order estimate');
+    const cost=(await import('/js/sim/data.js')).PRODUCTS.coffee.cost*5;check(document.querySelector('[data-order-cost="coffee"]').textContent.includes(cost.toLocaleString('ko-KR')),'live order estimate');
     qty.dispatchEvent(new Event('change',{bubbles:true}));click('[data-stock-select="visible"]');change('[data-bulk-par]','9');
-    const {parseSave,exportText}=await import('/save.js');check(parseSave(exportText(__game.state)).management.favorites.includes('coffee'),'favorite saved');
+    const {parseSave,exportText}=await import('/js/storage/save.js');check(parseSave(exportText(__game.state)).management.favorites.includes('coffee'),'favorite saved');
     document.querySelector('.bulk-tools').scrollIntoView({block:'center'});
     return {favorite:true,filter:true,batchMode:true,batchPar:true,blankParGuard:true,estimate:true,reasons:true};
   })()`);
@@ -125,7 +125,7 @@ try{
     const click=q=>{const e=document.querySelector(q);if(!e)throw Error('Missing '+q);e.click();};
     const check=(v,m)=>{if(!v)throw Error(m);};
     click('[data-ops-tab="review"]');check(document.getElementById('ops-view').textContent.includes('입구 매트'),'facility feedback');
-    const {returnSummary}=await import('/operations-insights.js'),{settleOffline}=await import('/sim.js');
+    const {returnSummary}=await import('/js/sim/operations-insights.js'),{settleOffline}=await import('/js/sim/sim.js');
     const now=Date.now(),memories=JSON.stringify(__game.state.memories);
     const report=settleOffline(__game.state,now,now-600000);check(report.items>0,'real offline settlement');
     __game.ui.returnSummary=returnSummary(__game.state,report);__game.ui.returnDismissed=false;

@@ -1,9 +1,9 @@
 import {writeFileSync} from 'node:fs';
 import {PixelCanvas,png} from './pixel-canvas.mjs';
 globalThis.OffscreenCanvas=PixelCanvas;
-const {initialState,step,setFacility}=await import('../dist/sim.js');
-const {renderScene}=await import('../dist/art.js');
-const {SCENE_WIDTH,SCENE_HEIGHT}=await import('../dist/projection.js');
+const {initialState,step,setFacility}=await import('../web/js/sim/sim.js');
+const {renderScene}=await import('../web/js/render/art.js');
+const {SCENE_WIDTH,SCENE_HEIGHT}=await import('../web/js/render/projection.js');
 const s=initialState();
 const render=(name,state,selected='yuna')=>{
   const before=JSON.stringify(state),canvas=new PixelCanvas(SCENE_WIDTH,SCENE_HEIGHT);

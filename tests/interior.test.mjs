@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, step, startVisit, stockAudit, START_MONEY, setFacility, setPromo, eligibleForTobacco } from '../dist/sim.js';
-import { FIXTURES, SPOTS, floorCell, findPath, center } from '../dist/world.js';
-import { PRODUCTS } from '../dist/data.js';
-import { BASKETS, pickUnits, unitPrice, itemsTotal, expiringOnShelf, PARCEL_FEE } from '../dist/interior.js';
-import { parseSave, exportText, snapshot } from '../dist/save.js';
-import { momentView } from '../dist/moments.js';
+import { initialState, step, startVisit, stockAudit, START_MONEY, setFacility, setPromo, eligibleForTobacco } from '../web/js/sim/sim.js';
+import { FIXTURES, SPOTS, floorCell, findPath, center } from '../web/js/sim/world.js';
+import { PRODUCTS } from '../web/js/sim/data.js';
+import { BASKETS, pickUnits, unitPrice, itemsTotal, expiringOnShelf, PARCEL_FEE } from '../web/js/sim/interior.js';
+import { parseSave, exportText, snapshot } from '../web/js/storage/save.js';
+import { momentView } from '../web/js/mind/moments.js';
 
 const advance = (s, minutes, each) => { for (let i = 0; i < minutes * 10; i++) { step(s, .1); each?.(s); } };
 const until = (s, pred, minutes) => { for (let i = 0; i < minutes * 10; i++) { step(s, .1); if (pred(s)) return true; } return false; };

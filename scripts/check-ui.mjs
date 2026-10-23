@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
-const html=readFileSync('dist/index.html','utf8'),app=readFileSync('dist/app.js','utf8'),ui=readFileSync('dist/ui.js','utf8'),css=readFileSync('dist/style.css','utf8')+readFileSync('dist/dashboard.css','utf8');
+const html=readFileSync('web/index.html','utf8'),app=readFileSync('web/js/app.js','utf8'),ui=readFileSync('web/js/ui/ui.js','utf8'),css=readFileSync('web/css/style.css','utf8')+readFileSync('web/css/dashboard.css','utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]),dynamic=[...ui.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(ids.length,new Set(ids).size,'Duplicate HTML ID');
 for(const m of app.matchAll(/\$\('([^']+)'\)/g))assert.ok([...ids,...dynamic].includes(m[1]),'Missing element '+m[1]);

@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {seasonAt,environmentAt,weatherChoices,exteriorNodes,STREET_PROPS,DISTRICT} from '../dist/environment.js';
-import {initialState,step,startConversation} from '../dist/sim.js';
-import {parseSave,exportText} from '../dist/save.js';
-import {momentView} from '../dist/moments.js';
+import {seasonAt,environmentAt,weatherChoices,exteriorNodes,STREET_PROPS,DISTRICT} from '../web/js/sim/environment.js';
+import {initialState,step,startConversation} from '../web/js/sim/sim.js';
+import {parseSave,exportText} from '../web/js/storage/save.js';
+import {momentView} from '../web/js/mind/moments.js';
 import {PixelCanvas} from '../scripts/pixel-canvas.mjs';
-import {SCENE_WIDTH,SCENE_HEIGHT,boxFaces} from '../dist/projection.js';
-import {renderScene} from '../dist/art.js';
+import {SCENE_WIDTH,SCENE_HEIGHT,boxFaces} from '../web/js/render/projection.js';
+import {renderScene} from '../web/js/render/art.js';
 
 test('seasons follow the saved game clock, including cycle boundaries and historical footage',()=>{
   for(const [day,name]of [[1,'spring'],[28,'spring'],[29,'summer'],[56,'summer'],[57,'autumn'],[84,'autumn'],[85,'winter'],[112,'winter'],[113,'spring']])assert.equal(seasonAt({clock:(day-1)*1440}).id,name);
@@ -57,8 +57,8 @@ test('all four seasons render different pixels and rendering preserves the full 
 });
 
 test('opening hours wrap past midnight, street lights follow the clock, and the sky matches within each cached step',async()=>{
-  const {shopOpen,environmentAt:env}=await import('../dist/environment.js');
-  const {skyBands}=await import('../dist/art-quarter.js');
+  const {shopOpen,environmentAt:env}=await import('../web/js/sim/environment.js');
+  const {skyBands}=await import('../web/js/render/art-quarter.js');
   const at=h=>({clock:h*60,weather:{kind:'clear'}});
   assert.deepEqual([1,2.5,15.9,16,23.9].map(h=>shopOpen({hours:[16,2]},at(h))),[true,false,false,true,true]);
   assert.deepEqual([7,21.9,22,3].map(h=>shopOpen({hours:[7,22]},at(h))),[true,true,false,false]);
@@ -72,7 +72,7 @@ test('opening hours wrap past midnight, street lights follow the clock, and the 
 });
 
 test('street furniture never stands on a cell people walk through',async()=>{
-  const {floorCell}=await import('../dist/world.js');
+  const {floorCell}=await import('../web/js/sim/world.js');
   for(const p of STREET_PROPS.filter(p=>!p.backdrop))
     for(let cy=Math.floor(p.y/32);cy<=Math.floor((p.y+p.h-1)/32);cy++)for(let cx=Math.floor(p.x/32);cx<=Math.floor((p.x+p.w-1)/32);cx++)
       assert.equal(floorCell(cx,cy,{facilities:{}})||floorCell(cx,cy,{staff:true,facilities:{}}),false,`${p.id} blocks ${cx},${cy}`);
@@ -80,7 +80,7 @@ test('street furniture never stands on a cell people walk through',async()=>{
 
 test('closed shops pull their shutters and a late-night shop stays lit after the others close',async()=>{
   globalThis.OffscreenCanvas=PixelCanvas;
-  const {project,inPolygon}=await import('../dist/projection.js');
+  const {project,inPolygon}=await import('../web/js/render/projection.js');
   const frame=hour=>{const s=initialState();s.clock=hour*60;s.weather.kind='clear';const cv=new PixelCanvas(SCENE_WIDTH,SCENE_HEIGHT);renderScene(cv.getContext('2d'),s,{now:0});return cv.data;};
   // Compare only pixels inside the shop's ground-floor front, so sky and window changes do not count.
   const front=id=>{const p=STREET_PROPS.find(p=>p.id===id),y=p.y+p.h;return [project(p.x+14,y,56),project(p.x+p.w-14,y,56),project(p.x+p.w-14,y,12),project(p.x+14,y,12)];};
