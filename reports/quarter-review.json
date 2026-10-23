@@ -1,0 +1,32 @@
+[
+  {
+    "seed": 42,
+    "days": 21,
+    "layoutVersion": 2,
+    "stock": true,
+    "balance": true,
+    "visitors": 716,
+    "bytes": 1244723,
+    "scenes": 8
+  },
+  {
+    "seed": 4242,
+    "days": 21,
+    "layoutVersion": 2,
+    "stock": true,
+    "balance": true,
+    "visitors": 712,
+    "bytes": 1193930,
+    "scenes": 8
+  },
+  {
+    "seed": 20261022,
+    "days": 21,
+    "layoutVersion": 2,
+    "stock": true,
+    "balance": true,
+    "visitors": 712,
+    "bytes": 1240848,
+    "scenes": 8
+  }
+]

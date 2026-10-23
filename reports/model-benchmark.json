@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-22T13:11:08.123Z",
+  "config": {
+    "mode": "ollama",
+    "url": "http://127.0.0.1:11434",
+    "model": "qwen2.5:3b"
+  },
+  "probe": {
+    "ok": true,
+    "models": [
+      "qwen2.5:3b"
+    ],
+    "message": "생성 확인 완료 (1.9초): 네, 알겠어요.",
+    "latencyMs": 1940,
+    "sample": "네, 알겠어요."
+  },
+  "cases": [
+    {
+      "intent": "confirm",
+      "rule": "네, 알겠어요.",
+      "model": "네, 알겠어요.",
+      "ms": 136,
+      "valid": true
+    },
+    {
+      "intent": "urge_reply",
+      "rule": "앞 손님 계산만 마칠게요.",
+      "model": "알겠습니다, 앞으로가 조금만 기다리세요.",
+      "ms": 177,
+      "valid": true
+    },
+    {
+      "intent": "small_reply",
+      "rule": "아니요, 이제 시작이에요.",
+      "model": "아니요, 이제 시작이에요.",
+      "ms": 163,
+      "valid": true
+    },
+    {
+      "intent": "umbrella_ack_known",
+      "rule": "챙겨 오셨네요. 감사합니다.",
+      "ms": 198,
+      "valid": false,
+      "error": "허용되지 않은 행동"
+    }
+  ],
+  "passed": 3,
+  "total": 4
+}

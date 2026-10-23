@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16282a">
+  <title>새벽 편의점</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23335b4e%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2215%22 text-anchor=%22middle%22 fill=%22%23f3e5b5%22 font-family=%22Georgia%22 font-style=%22italic%22 font-weight=%22700%22%3E24%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="mark" aria-hidden="true">24</span><div><b>새벽 편의점</b><small>작은 밤의 기록</small></div></div>
+    <div class="clock" aria-live="off"><span id="day">DAY 1</span><strong id="time">21:18</strong><span id="weather" class="weather">비</span></div>
+    <div class="money"><span class="label">오늘 매출</span><strong id="revenue">₩0</strong><span class="label">금고</span><b id="cash">₩0</b></div>
+    <label class="order-mode-control">발주<select id="order-mode" aria-label="전체 발주 방식"><option value="auto">자동</option><option value="approval">승인 후 발주</option><option value="manual">수동</option></select></label>
+    <div class="chips"><button id="ai-chip" class="chip" title="대사 생성 방식">대사: 규칙 기반</button><button id="save-chip" class="chip" title="저장 상태">저장 준비 중</button></div>
+    <div class="time-controls" role="group" aria-label="시간 조절">
+      <button id="pause" aria-label="일시정지" title="일시정지 (Space)">Ⅱ</button>
+      <button class="speed active" data-speed="1" aria-label="시간 1배속" aria-pressed="true">1×</button>
+      <button class="speed" data-speed="3" aria-label="시간 3배속" aria-pressed="false">3×</button>
+      <button class="speed" data-speed="8" aria-label="시간 8배속" aria-pressed="false">8×</button>
+      <button class="speed" data-speed="20" aria-label="시간 20배속" aria-pressed="false">20×</button>
+    </div>
+    <button id="settings-open" class="icon" aria-label="설정과 저장" title="설정과 저장">⚙</button>
+    <button id="sound-toggle" class="chip" aria-pressed="false">소리 꺼짐</button>
+  </header>
+  <div id="writer-banner" class="writer-banner" hidden role="status">다른 창에서 영업 중이거나 단독 저장 권한을 얻지 못했어요. 이 창의 진행과 저장은 멈춰 있어요. <button id="writer-retry">이 창에서 이어하기</button></div>
+
+  <main class="layout">
+    <section class="stage-col" aria-label="편의점 관찰">
+      <div class="stage-heading"><div><span class="eyebrow"><i></i> YOUR NEIGHBORHOOD, ALL NIGHT</span><h1>불이 켜진 우리 동네.</h1></div><div class="row"><button data-open-panel="ops">운영 데스크</button><button id="observation-toggle" aria-pressed="false" title="패널을 접고 매장을 크게 보기">관찰 모드</button></div></div>
+      <nav id="store-pulse" class="store-pulse" aria-label="매장 상황 바로가기"></nav>
+      <div class="scene-shell">
+      <div class="viewport" id="viewport">
+        <canvas id="scene" width="1072" height="664" aria-label="쿼터뷰 편의점 매장. 인물이나 설비를 누르면 살펴볼 수 있어요."></canvas>
+        <div id="bubbles" aria-hidden="true"></div>
+        <div id="paused-flag" class="paused-flag" hidden>일시정지</div>
+      </div>
+      <div class="scene-toolbar">
+        <div class="hud"><span class="shop-open">영업 중</span><span id="occupancy">손님 0명</span><span id="street-count" title="매장에 들어오지 않고 가게 앞을 지나는 사람들">거리 0명</span><span id="duty"></span></div>
+        <div class="zoom" role="group" aria-label="화면 확대">
+          <button data-zoom="out" aria-label="축소">－</button><span id="zoom-level" aria-live="off">×1</span><button data-zoom="in" aria-label="확대">＋</button><button data-zoom="store" title="편의점을 중심으로 확대">매장</button><button data-zoom="fit" title="도로와 주변 상가까지 보기">동네 전체</button><button id="follow" aria-pressed="false">인물 따라가기</button>
+        </div>
+      </div>
+      </div>
+      <div class="observation-hint"><span id="selection-hint">인물을 눌러 살펴보세요. 드래그로 이동하고 휠로 확대해요.</span><span id="speed-hint" hidden>빠른 재생 중 · 놓친 대화는 기록에 남아요.</span></div>
+      <div class="stage-footer">
+      <section class="live-dialogue" aria-label="최근 대화"><div class="feed-heading"><span class="eyebrow">지금 오가는 말</span><button data-open-panel="log">대화 전체 ↗</button></div><div id="live-lines"><p class="muted">매장의 이야기가 이곳에 이어져요.</p></div></section>
+      <aside id="opening-guide" class="opening-guide" hidden aria-label="첫 관찰 안내">
+        <div><span id="opening-guide-step" class="eyebrow"></span><h2 id="opening-guide-title"></h2><p id="opening-guide-text"></p></div>
+        <button id="opening-guide-action"></button><button id="opening-guide-dismiss" class="icon" aria-label="첫 관찰 안내 접기">×</button>
+      </aside>
+      <section class="moments-bar" aria-label="최근 장면">
+        <div class="moments-heading"><h2>오늘의 장면</h2><span id="moment-count" class="muted small"></span><button id="moments-all">장면 모아보기</button></div>
+        <div id="moment-alert" class="moment-alert" hidden><span id="moment-alert-text" role="status"></span><button id="moment-watch">지금 보기</button><button id="moment-dismiss" aria-label="장면 알림 닫기">×</button></div>
+        <div id="moment-cards" class="moment-cards"></div>
+      </section>
+      </div>
+      <nav id="floor-people" class="floor-people" aria-label="지금 매장에 있는 사람"></nav>
+      <nav class="drawer-tabs" role="tablist" aria-label="기록과 운영">
+        <button role="tab" data-panel="log" aria-selected="true">대화 기록 <span id="log-count" class="count">0</span></button>
+        <button role="tab" data-panel="events" aria-selected="false">장면과 사건 <span class="count unread-count" hidden>0</span></button>
+        <button role="tab" data-panel="roster" aria-selected="false">근무표</button>
+        <button id="drawer-toggle" class="drawer-toggle" aria-expanded="true" aria-label="서랍 접기">접기</button>
+      </nav>
+      <div class="drawer" id="drawer"></div>
+    </section>
+
+    <aside class="inspector" id="inspector" aria-label="살펴보기">
+      <button class="sheet-handle" id="sheet-handle" aria-expanded="false"><span></span><b id="sheet-title">인물</b><small id="sheet-preview">손님을 눌러 살펴보세요</small><em aria-hidden="true">⌃</em></button>
+      <div class="inspector-heading"><span class="eyebrow">SAEBYEOK / STORE DESK</span><div class="ops-actions"><h2 id="inspector-title">매장 운영</h2><button id="ops-expand" title="넓은 운영 화면 열기">넓게 보기 ↗</button></div><p id="inspector-description">작은 가게의 오늘을 돌보는 자리.</p></div>
+      <nav class="sheet-tabs" role="tablist" aria-label="정보 패널">
+        <button role="tab" data-panel="ops" aria-selected="true">운영</button>
+        <button role="tab" data-panel="person" aria-selected="false">사람</button>
+        <button role="tab" data-panel="log" aria-selected="false">대화</button>
+        <button role="tab" data-panel="events" aria-selected="false">장면 <span class="count unread-count" hidden>0</span></button>
+        <button role="tab" data-panel="roster" aria-selected="false">근무</button>
+      </nav>
+      <div class="inspector-body" id="inspector-body"></div>
+    </aside>
+  </main>
+
+  <!-- Panels are moved between the side column and the drawer depending on screen width. -->
+  <div hidden id="panel-store">
+    <section class="panel" id="panel-person" data-panel="person" role="tabpanel" aria-label="인물 정보">
+      <button class="back-to-ops" data-open-panel="ops">← 매장 운영으로</button>
+      <div class="people-strip" id="people-strip"></div>
+      <div id="person-detail" class="person-detail"></div>
+    </section>
+    <section class="panel" id="panel-log" data-panel="log" role="tabpanel" aria-label="대화 기록">
+      <div class="panel-bar"><label>대화 보기 <select id="log-filter"><option value="all">모든 사람</option><option value="person">선택한 사람</option><option value="visit">선택한 일행</option></select></label><button id="log-follow" aria-pressed="true">새 대화 따라가기</button><button id="log-latest" hidden>최신 대화로 ↓</button></div>
+      <div id="log-scroll" class="log-scroll" tabindex="0" aria-label="대화 기록 스크롤"><ol id="log-list" class="log-list"></ol></div>
+      <p class="log-note">대화 기록은 인물의 기억과 달라요. 스크롤을 올리면 자동 이동이 멈춰요.</p>
+    </section>
+    <section class="panel" id="panel-events" data-panel="events" role="tabpanel" aria-label="장면과 사건"><h3>영업일지</h3><div id="daily-journal"></div><h3>놓친 장면 다시 보기</h3><p class="small muted">최근 8개와 간직한 장면 4개를 보관해요.</p><div id="moment-archive" class="moment-archive"></div><h3>사건 기록</h3><ol id="event-list" class="event-list"></ol></section>
+    <section class="panel" id="panel-roster" data-panel="roster" role="tabpanel" aria-label="근무표"><div id="roster-view"></div></section>
+    <section class="panel" id="panel-ops" data-panel="ops" role="tabpanel" aria-label="발주와 시설"><div id="ops-view"></div></section>
+  </div>
+  <dialog id="operations-wide" aria-labelledby="operations-title"><div class="dialog-head"><h2 id="operations-title">매장 운영</h2><button id="operations-close" aria-label="운영 화면 닫기">닫기</button></div><p class="muted small">관리 화면을 열어 둔 동안 게임 시간은 멈춰요.</p><div id="operations-wide-body"></div></dialog>
+
+  <dialog id="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="dialog-head"><h2 id="settings-title">설정과 저장</h2><button class="icon" aria-label="닫기">×</button></form>
+    <section>
+      <h3>저장</h3>
+      <p class="muted">진행 상황은 이 브라우저의 IndexedDB에 자동으로 저장돼요. 중요한 거래와 사건이 끝날 때, 그리고 20초마다 저장해요.</p>
+      <p id="storage-status" class="storage-status" role="status"></p>
+      <div class="row"><button id="save-now">지금 저장</button><button id="export">파일로 내보내기</button><label class="file-btn">파일 가져오기<input id="import" type="file" accept="application/json,.json"></label></div>
+      <div class="row"><button id="reset" class="danger">새로 시작</button></div>
+      <p id="settings-message" class="message" role="status"></p>
+    </section>
+    <section>
+      <h3>장면 관찰</h3><label class="auto-focus"><input id="moment-auto-focus" type="checkbox"> 중요한 장면이 시작되면 자동으로 카메라 이동</label><p class="muted small">기본은 꺼짐이에요. 알림을 누르면 직접 이동할 수 있어요.</p>
+      <label class="auto-focus"><input id="slow-dialogue" type="checkbox" checked> 따라가는 인물의 중요한 대화는 천천히</label>
+      <label class="setting-select">시간 흐름 <select id="world-rate"><option value="0.5">느긋하게 · 하루 약 48분</option><option value="1" selected>보통 · 하루 약 24분</option><option value="2">빠르게 · 하루 약 12분</option></select></label>
+      <button id="opening-guide-restart">관찰 안내 다시 보기</button>
+    </section>
+    <section>
+      <h3>편의점 소리</h3><p class="muted small">처음에는 꺼져 있어요. 소리를 켜면 빗소리, 냉장고 소음, 문 종과 전자레인지 소리가 나요.</p>
+      <button id="sound-settings" aria-pressed="false">소리 꺼짐</button>
+      <label class="volume-row">환경음 <input id="ambient-volume" type="range" min="0" max="100" value="35"></label>
+      <label class="volume-row">생활 소리 <input id="effects-volume" type="range" min="0" max="100" value="55"></label>
+    </section>
+    <section>
+      <h3>대사 생성</h3>
+      <p class="muted">기본값은 규칙 기반 대사예요. 이 컴퓨터에서 로컬 모델 서버를 실행했다면 연결할 수 있어요. 외부 유료 API에는 연결하지 않아요. 돈, 재고, 구매와 사건은 언제나 게임 규칙이 정해요.</p>
+      <p id="ai-origin-hint" class="muted small" hidden></p>
+      <div class="form-grid">
+        <label>방식 <select id="ai-mode"></select></label>
+        <label>서버 주소 <input id="ai-url" type="text" spellcheck="false" placeholder="http://127.0.0.1:11434"></label>
+        <label>모델 이름 <input id="ai-model" list="ai-model-list" type="text" spellcheck="false"><datalist id="ai-model-list"></datalist></label>
+      </div>
+      <div class="row"><button id="ai-list">모델 목록</button><button id="ai-test">대사 생성 시험</button><button id="ai-apply">적용</button></div>
+      <p id="ai-status" class="message" role="status"></p>
+    </section>
+    <p class="muted small">부재중에는 최대 8시간의 재고 판매와 매출만 정산해요. 인물의 이야기 시간은 이어서 진행해요. 하루 운영비 12,000원이 자정에 정산돼요.</p>
+  </dialog>
+  <dialog id="welcome" class="welcome" aria-labelledby="welcome-title" aria-describedby="welcome-description">
+    <p class="welcome-time">목요일, 밤 9시 18분 <span>비</span></p>
+    <h2 id="welcome-title">불이 켜진 가게 하나.</h2>
+    <p id="welcome-description">유나는 저녁 근무를 마무리하고 있어요.<br>친구 둘은 간식을 고르고, 가게 앞에는 사람들이 지나갑니다.</p>
+    <p class="welcome-role">당신은 이 작은 가게를 지켜봅니다.<br>사람들은 스스로 움직이고, 각자의 방식으로 오늘을 기억해요.</p>
+    <dl class="welcome-facts"><div><dt>지금 근무</dt><dd>유나 · 저녁 근무</dd></div><div><dt>다음 교대</dt><dd>22:00 · 재현</dd></div><div><dt>금고</dt><dd>₩300,000</dd></div><div><dt>재고 관리</dt><dd>자동 발주 켜짐</dd></div></dl>
+    <p class="welcome-note">도시락 매대는 비어 있어요. 다음 정기 입고는 내일 아침 7시예요.</p>
+    <p id="welcome-storage" class="message error" hidden role="status"></p>
+    <label class="welcome-sound"><input id="welcome-sound" type="checkbox"> 빗소리와 가게 소리 켜기</label>
+    <div class="welcome-actions"><button id="welcome-start" class="primary" autofocus>이 밤 들여다보기</button><button id="welcome-skip">안내 없이 시작</button></div>
+    <p class="welcome-foot">시작하기 전에는 시간이 흐르지 않아요. 안내는 언제든 접을 수 있어요.</p>
+  </dialog>
+  <dialog id="replay" aria-labelledby="replay-title">
+    <form method="dialog" class="dialog-head"><h2 id="replay-title">장면 다시 보기</h2><button class="icon" aria-label="다시 보기 닫기">×</button></form>
+    <p id="replay-meta" class="muted small"></p>
+    <div class="replay-stage"><canvas id="replay-canvas" width="1072" height="664" aria-label="기록된 쿼터뷰 장면 재생"></canvas><div id="replay-caption" class="replay-caption"></div></div>
+    <div class="replay-controls"><button id="replay-play" aria-label="다시 보기 일시정지">Ⅱ</button><input id="replay-seek" type="range" min="0" max="0" value="0" aria-label="장면 재생 위치"><span id="replay-position"></span></div>
+    <p class="small muted">다시 보는 동안 영업은 잠시 멈춰요. 과거 행동을 다시 실행하지 않아요.</p>
+    <ol id="replay-lines" class="log-list"></ol>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

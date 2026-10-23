@@ -1,0 +1,8 @@
+node_modules/
+*.log
+*.tar.gz
+qa/
+
+# Not published: another host's project settings and retired reference code.
+.openai/
+archive/

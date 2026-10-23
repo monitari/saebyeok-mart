@@ -1,0 +1,85 @@
+{
+  "at": "2026-10-22T13:22:16.913Z",
+  "realSeconds": 10,
+  "gameMinutes": 65.20000000000057,
+  "applied": 10,
+  "fallback": 1,
+  "service": {
+    "ok": 10,
+    "failed": 1,
+    "retried": 4,
+    "stale": 0,
+    "displayed": 10,
+    "fallback": 1,
+    "lastMs": 124,
+    "lastError": ""
+  },
+  "auditOK": true,
+  "sources": {
+    "fallback": 2,
+    "ai": 10,
+    "rule": 33
+  },
+  "lines": [
+    {
+      "text": "만식 손님한테 우산 빌려줬어요.",
+      "source": "rule",
+      "kind": "handover_umbrella"
+    },
+    {
+      "text": "제육 도시락 품절이에요.",
+      "source": "rule",
+      "kind": "handover_soldout"
+    },
+    {
+      "text": "알겠어요.",
+      "source": "rule",
+      "kind": "handover_ack"
+    },
+    {
+      "text": "잘가세요.",
+      "source": "ai",
+      "kind": "colleague_bye"
+    },
+    {
+      "text": "1,500원이요.",
+      "source": "rule",
+      "kind": "total"
+    },
+    {
+      "text": "내일 회의 자료 아직이지?",
+      "source": "fallback",
+      "kind": "coworker_overtime"
+    },
+    {
+      "text": "감사합니다. 잘 다녀오세요.",
+      "source": "ai",
+      "kind": "thank_bye"
+    },
+    {
+      "text": "네.",
+      "source": "ai",
+      "kind": "coworker_reply"
+    },
+    {
+      "text": "이것만요.",
+      "source": "rule",
+      "kind": "pay_hand"
+    },
+    {
+      "text": "유통기한 얼마 안 남았는데 할인 안 돼요?",
+      "source": "rule",
+      "kind": "discount_ask"
+    },
+    {
+      "text": "할인은 스티커 붙은 것만 돼요.",
+      "source": "rule",
+      "kind": "discount_refuse"
+    },
+    {
+      "text": "아 그래요? 그럼 그냥 주세요.",
+      "source": "rule",
+      "kind": "discount_after"
+    }
+  ]
+}
