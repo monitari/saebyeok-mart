@@ -10,7 +10,7 @@ if (git('status', '--porcelain', '--', 'web')) {
   process.exit(1);
 }
 run(process.execPath, ['scripts/check.mjs']);
-run(process.execPath, ['--test', 'tests/']);
+run(process.execPath, ['--test', 'tests/*.test.mjs']);
 const commit = git('subtree', 'split', '--prefix=web', 'HEAD');
 git('push', '--force', 'origin', `${commit}:refs/heads/gh-pages`);
 console.log(`Published web/ (${commit.slice(0, 7)}) to gh-pages. GitHub Pages updates within a minute or two.`);
